@@ -3,73 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学术论文深度审核系统 - Gemini 增强版</title>
+    <title>学术对谈式论文深度审核系统</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --bg: #f8fafc;
-        }
-        body { font-family: 'PingFang SC', system-ui, sans-serif; background: var(--bg); padding: 20px; color: #1e293b; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #6366f1, #a855f7); color: white; padding: 30px; text-align: center; }
-        .content { padding: 30px; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; }
-        input, textarea { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
-        textarea { min-height: 250px; resize: vertical; }
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; align-items: center; }
-        .btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
-        .btn-main { background: var(--primary); color: white; flex: 2; }
-        .btn-main:hover { background: #4338ca; }
-        .btn-clear { background: #e2e8f0; color: #475569; flex: 1; }
-        .loading { display: none; color: var(--primary); font-size: 14px; animation: pulse 1.5s infinite; }
+        :root { --primary: #2563eb; --accent: #7c3aed; --bg: #f1f5f9; }
+        body { font-family: 'PingFang SC', 'Hiragino Sans GB', sans-serif; background: var(--bg); padding: 20px; color: #1e293b; line-height: 1.7; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1e40af, #7c3aed); color: white; padding: 40px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; letter-spacing: 1px; }
+        .header p { margin-top: 10px; opacity: 0.9; font-weight: 300; }
+        .content { padding: 40px; }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; font-weight: 600; margin-bottom: 10px; color: #334155; }
+        input, textarea { width: 100%; padding: 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; transition: all 0.3s; }
+        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        textarea { min-height: 350px; font-family: inherit; }
+        .btn-group { display: flex; gap: 15px; margin-top: 20px; align-items: center; }
+        .btn { padding: 14px 28px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: all 0.2s; font-size: 16px; }
+        .btn-main { background: var(--primary); color: white; flex: 2; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+        .btn-main:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .btn-main:disabled { background: #94a3b8; transform: none; }
+        .btn-clear { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; flex: 1; }
+        .loading { display: none; color: var(--accent); font-weight: bold; }
         
-        /* 报告区域样式 */
-        #resultArea { margin-top: 30px; border-top: 2px solid #f1f5f9; padding-top: 30px; display: none; }
-        .report-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 30px; line-height: 1.8; }
-        .report-card h1 { color: #1e293b; border-bottom: 2px solid #4f46e5; padding-bottom: 10px; font-size: 24px; }
-        .report-card h2 { color: #334155; margin-top: 25px; font-size: 20px; border-left: 4px solid #4f46e5; padding-left: 12px; }
-        .report-card ul { padding-left: 20px; }
-        .report-card code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
-        .error-box { background: #fef2f2; border: 1px solid #fee2e2; color: #b91c1c; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; }
+        #resultArea { margin-top: 40px; display: none; border-top: 1px solid #e2e8f0; padding-top: 30px; }
+        .report-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 35px; color: #334155; }
+        /* Markdown 样式增强 */
+        .report-card h2 { color: #1e293b; border-left: 5px solid var(--primary); padding-left: 15px; margin: 30px 0 20px; }
+        .report-card h3 { color: #475569; margin-top: 20px; }
+        .report-card p { margin-bottom: 1.2em; }
+        .report-card blockquote { border-left: 4px solid #e2e8f0; padding-left: 20px; color: #64748b; font-style: italic; margin: 20px 0; }
+        .report-card code { background: #f1f5f9; color: #be185d; padding: 2px 5px; border-radius: 4px; font-size: 0.9em; }
         
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        .error-box { background: #fff1f2; border: 1px solid #fda4af; color: #9f1239; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
+        
+        @media print { .header, .btn-group, .form-group { display: none; } .container { box-shadow: none; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>文学/美学/艺术学论文深度审核</h1>
-        <p>基于 DeepSeek-V3 高性能学术模型</p>
+        <h1>文艺学/美学/艺术学学术对考系统</h1>
+        <p>直接切入具体问题，拒绝套路化评价</p>
     </div>
     
     <div class="content">
         <div class="form-group">
-            <label>API 密钥 (SiliconFlow API KEY)</label>
-            <input type="password" id="apiKey" placeholder="输入 sk-..." value="">
+            <label>API 密钥 (SiliconFlow)</label>
+            <input type="password" id="apiKey" placeholder="请输入您的 API Key (sk-...)">
         </div>
         
         <div class="form-group">
-            <label>论文正文内容</label>
-            <textarea id="paperContent" placeholder="在此粘贴需要审核的论文全文..."></textarea>
+            <label>论文文本（建议包含摘要、核心论点及论证段落）</label>
+            <textarea id="paperContent" placeholder="在此输入论文具体内容。系统将针对您的具体论点、论据与逻辑展开学术探讨..."></textarea>
         </div>
         
         <div class="btn-group">
-            <button class="btn btn-main" id="startBtn">提交穿透式审核</button>
-            <button class="btn btn-clear" id="clearBtn">重置清空</button>
-            <span class="loading" id="loading">正在调取学术模型，请稍候约10-30秒...</span>
+            <button class="btn btn-main" id="startBtn">开始深度学术审验</button>
+            <button class="btn btn-clear" id="clearBtn">清空内容</button>
+            <span class="loading" id="loading">正在激活学术知识库并检索相关信息...</span>
         </div>
 
         <div class="error-box" id="errorBox"></div>
 
         <div id="resultArea">
-            <h2 style="margin-bottom: 15px;">审核报告生成完毕</h2>
             <div class="report-card" id="reportContent"></div>
-            <div style="margin-top: 20px;">
-                <button class="btn btn-clear" onclick="window.print()">保存为PDF报告</button>
-            </div>
+            <button class="btn btn-clear" style="margin-top:20px; width:100%" onclick="window.print()">将本次对考存为 PDF 存档</button>
         </div>
     </div>
 </div>
@@ -85,10 +85,11 @@
         const apiKey = document.getElementById('apiKey').value.trim();
         const content = document.getElementById('paperContent').value.trim();
 
-        if (!apiKey) { alert('请填写 API KEY'); return; }
-        if (!content) { alert('请输入论文内容'); return; }
+        if (!apiKey || !content) {
+            alert('请提供 API Key 和论文文本');
+            return;
+        }
 
-        // 重置状态
         errorBox.style.display = 'none';
         resultArea.style.display = 'none';
         loading.style.display = 'inline';
@@ -102,30 +103,36 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    // 修正：使用硅基流动支持的最新模型 ID
-                    model: "deepseek-ai/DeepSeek-V3", 
+                    model: "deepseek-ai/DeepSeek-V3", // 或使用 Qwen2.5-72B-Instruct
                     messages: [
                         {
                             role: "system",
-                            content: `你是一位在文史哲领域具有深厚造诣的资深学术评议人。请对论文进行深度审核，必须包含以下模块：
-                            1. 【诊断结果】列出术语错误、逻辑断裂点。
-                            2. 【透视分析】分析理论谱系是否陈旧、文本阐释是否透彻、是否有过度解读。
-                            3. 【文献补漏】列出5个该领域近三年的核心参考文献。
-                            4. 【修改方案】给出具体的重构策略。`
+                            content: `你是一位在文艺学、美学、艺术学领域具有顶尖学术背景的同行评议专家。
+                            
+你的任务不是做形式上的评价，而是针对论文探讨的具体问题展开深度的学术对撞。请遵循以下准则：
+
+1. **具体性原则**：严禁使用“论证严密”、“结构清晰”等空泛词汇。必须指出作者针对哪个具体问题提出了什么具体观点。
+2. **实质探讨**：分析作者对材料（如文学文本、史料、艺术作品）的处理是否准确。指出其论证路径中是否存在逻辑滑坡、断裂或过度阐释。
+3. **理论对撞**：激活你预训练中的文艺学核心理论（如现象学美学、接受美学、叙事学、视觉文化研究等），核实论文中提及的理论是否被误用、降维或停留在浅层。
+4. **真实性核实**：针对论文涉及的历史事实、引文出处、当代研究动态，通过你掌握的信息进行审验。
+5. **瑕疵发现**：挖掘论文中隐藏的矛盾、被遮蔽的学术盲区，或是在具体问题讨论中不够清晰、缺乏说服力的地方。
+
+报告结构：
+一、具体核心观点审验（针对论题本身）
+二、论证材料与证据链评价（针对事实与引证）
+三、逻辑路径与探讨深度分析（针对推导过程）
+四、学术前沿对标与缺陷指出（针对学术瑕疵与盲区）
+五、针对性的进路建议（不再是写作建议，而是研究思路的修正）`
                         },
-                        { role: "user", content: content }
+                        { role: "user", content: `请对以下论文内容进行实质性的学术探讨和审验：\n\n${content}` }
                     ],
-                    temperature: 0.3
+                    temperature: 0.4
                 })
             });
 
             const data = await response.json();
+            if (!response.ok) throw new Error(data.error?.message || '请求失败');
 
-            if (!response.ok) {
-                throw new Error(data.error?.message || '模型接口响应异常');
-            }
-
-            // 修正：使用 marked 库进行稳健的 Markdown 渲染
             const rawMarkdown = data.choices[0].message.content;
             reportContent.innerHTML = marked.parse(rawMarkdown);
             
@@ -133,7 +140,7 @@
             resultArea.scrollIntoView({ behavior: 'smooth' });
 
         } catch (err) {
-            errorBox.innerText = "报告生成失败：" + err.message;
+            errorBox.innerText = "审验中断：" + err.message;
             errorBox.style.display = 'block';
         } finally {
             loading.style.display = 'none';
@@ -144,7 +151,6 @@
     document.getElementById('clearBtn').addEventListener('click', () => {
         document.getElementById('paperContent').value = '';
         resultArea.style.display = 'none';
-        errorBox.style.display = 'none';
     });
 </script>
 
