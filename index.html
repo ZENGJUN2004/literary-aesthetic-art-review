@@ -3,41 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>学术对谈式论文深度审核系统</title>
+    <title>学术对考系统 - 逐一评述深度版</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        :root { --primary: #2563eb; --accent: #7c3aed; --bg: #f1f5f9; }
-        body { font-family: 'PingFang SC', 'Hiragino Sans GB', sans-serif; background: var(--bg); padding: 20px; color: #1e293b; line-height: 1.7; }
+        :root { --primary: #1e40af; --accent: #7c3aed; --bg: #f8fafc; }
+        body { font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; background: var(--bg); padding: 20px; color: #1e293b; line-height: 1.8; }
         .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: linear-gradient(135deg, #1e40af, #7c3aed); color: white; padding: 40px; text-align: center; }
-        .header h1 { margin: 0; font-size: 28px; letter-spacing: 1px; }
+        .header { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; padding: 40px; text-align: center; }
+        .header h1 { margin: 0; font-size: 26px; letter-spacing: 1px; }
         .header p { margin-top: 10px; opacity: 0.9; font-weight: 300; }
         .content { padding: 40px; }
         .form-group { margin-bottom: 25px; }
         label { display: block; font-weight: 600; margin-bottom: 10px; color: #334155; }
         input, textarea { width: 100%; padding: 15px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; box-sizing: border-box; outline: none; transition: all 0.3s; }
-        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        textarea { min-height: 350px; font-family: inherit; }
+        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1); }
+        textarea { min-height: 380px; font-family: inherit; }
         .btn-group { display: flex; gap: 15px; margin-top: 20px; align-items: center; }
         .btn { padding: 14px 28px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; transition: all 0.2s; font-size: 16px; }
-        .btn-main { background: var(--primary); color: white; flex: 2; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
-        .btn-main:hover { background: #1d4ed8; transform: translateY(-1px); }
-        .btn-main:disabled { background: #94a3b8; transform: none; }
-        .btn-clear { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; flex: 1; }
-        .loading { display: none; color: var(--accent); font-weight: bold; }
+        .btn-main { background: var(--primary); color: white; flex: 2; }
+        .btn-main:hover { background: #1a368e; transform: translateY(-1px); }
+        .btn-main:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-clear { background: #f1f5f9; color: #64748b; flex: 1; }
+        .loading { display: none; color: var(--accent); font-weight: bold; animation: blink 1.5s infinite; }
         
-        #resultArea { margin-top: 40px; display: none; border-top: 1px solid #e2e8f0; padding-top: 30px; }
-        .report-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 35px; color: #334155; }
-        /* Markdown 样式增强 */
-        .report-card h2 { color: #1e293b; border-left: 5px solid var(--primary); padding-left: 15px; margin: 30px 0 20px; }
-        .report-card h3 { color: #475569; margin-top: 20px; }
-        .report-card p { margin-bottom: 1.2em; }
-        .report-card blockquote { border-left: 4px solid #e2e8f0; padding-left: 20px; color: #64748b; font-style: italic; margin: 20px 0; }
-        .report-card code { background: #f1f5f9; color: #be185d; padding: 2px 5px; border-radius: 4px; font-size: 0.9em; }
+        #resultArea { margin-top: 40px; display: none; border-top: 2px solid #e2e8f0; padding-top: 30px; }
+        .report-card { background: #fff; padding: 10px; color: #334155; }
+        /* 深度学术报告排版优化 */
+        .report-card h1 { font-size: 1.6em; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .report-card h2 { font-size: 1.3em; color: #1e293b; background: #f1f5f9; padding: 8px 15px; border-radius: 6px; margin-top: 30px; }
+        .report-card h3 { font-size: 1.1em; color: var(--accent); margin-top: 20px; }
+        .report-card blockquote { border-left: 4px solid var(--accent); padding: 10px 20px; background: #fdfaff; color: #5b21b6; margin: 20px 0; border-radius: 0 8px 8px 0; }
+        .report-card hr { border: none; border-top: 1px dashed #cbd5e1; margin: 30px 0; }
         
         .error-box { background: #fff1f2; border: 1px solid #fda4af; color: #9f1239; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
-        
-        @media print { .header, .btn-group, .form-group { display: none; } .container { box-shadow: none; } }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        @media print { .header, .btn-group, .form-group, .btn-clear { display: none; } .container { box-shadow: none; } }
     </style>
 </head>
 <body>
@@ -45,31 +45,31 @@
 <div class="container">
     <div class="header">
         <h1>文艺学/美学/艺术学学术对考系统</h1>
-        <p>直接切入具体问题，拒绝套路化评价</p>
+        <p>针对具体问题、观点与材料的逐一评述（深度学术对撞版）</p>
     </div>
     
     <div class="content">
         <div class="form-group">
             <label>API 密钥 (SiliconFlow)</label>
-            <input type="password" id="apiKey" placeholder="请输入您的 API Key (sk-...)">
+            <input type="password" id="apiKey" placeholder="输入您的 sk-...">
         </div>
         
         <div class="form-group">
-            <label>论文文本（建议包含摘要、核心论点及论证段落）</label>
-            <textarea id="paperContent" placeholder="在此输入论文具体内容。系统将针对您的具体论点、论据与逻辑展开学术探讨..."></textarea>
+            <label>论文文本（建议包含核心论证逻辑）</label>
+            <textarea id="paperContent" placeholder="在此粘贴论文内容。系统将激活预训练理论储备，针对论文所涉及的具体问题、观点、材料逐一展开学术评述..."></textarea>
         </div>
         
         <div class="btn-group">
-            <button class="btn btn-main" id="startBtn">开始深度学术审验</button>
-            <button class="btn btn-clear" id="clearBtn">清空内容</button>
-            <span class="loading" id="loading">正在激活学术知识库并检索相关信息...</span>
+            <button class="btn btn-main" id="startBtn">开始逐一学术评述</button>
+            <button class="btn btn-clear" id="clearBtn">清空</button>
+            <span class="loading" id="loading">正在穿透文本、检索信息并进行理论对撞...</span>
         </div>
 
         <div class="error-box" id="errorBox"></div>
 
         <div id="resultArea">
             <div class="report-card" id="reportContent"></div>
-            <button class="btn btn-clear" style="margin-top:20px; width:100%" onclick="window.print()">将本次对考存为 PDF 存档</button>
+            <button class="btn btn-clear" style="margin-top:20px; width:100%" onclick="window.print()">导出学术对考存档 (PDF)</button>
         </div>
     </div>
 </div>
@@ -86,7 +86,7 @@
         const content = document.getElementById('paperContent').value.trim();
 
         if (!apiKey || !content) {
-            alert('请提供 API Key 和论文文本');
+            alert('请完整填写 API KEY 和论文内容');
             return;
         }
 
@@ -103,35 +103,35 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    model: "deepseek-ai/DeepSeek-V3", // 或使用 Qwen2.5-72B-Instruct
+                    model: "deepseek-ai/DeepSeek-V3", 
                     messages: [
                         {
                             role: "system",
                             content: `你是一位在文艺学、美学、艺术学领域具有顶尖学术背景的同行评议专家。
                             
-你的任务不是做形式上的评价，而是针对论文探讨的具体问题展开深度的学术对撞。请遵循以下准则：
+你的核心任务是：针对所提供的论文文本，围绕其涉及的具体问题、观点或材料进行逐一评述。严禁空泛评价。
 
-1. **具体性原则**：严禁使用“论证严密”、“结构清晰”等空泛词汇。必须指出作者针对哪个具体问题提出了什么具体观点。
-2. **实质探讨**：分析作者对材料（如文学文本、史料、艺术作品）的处理是否准确。指出其论证路径中是否存在逻辑滑坡、断裂或过度阐释。
-3. **理论对撞**：激活你预训练中的文艺学核心理论（如现象学美学、接受美学、叙事学、视觉文化研究等），核实论文中提及的理论是否被误用、降维或停留在浅层。
-4. **真实性核实**：针对论文涉及的历史事实、引文出处、当代研究动态，通过你掌握的信息进行审验。
-5. **瑕疵发现**：挖掘论文中隐藏的矛盾、被遮蔽的学术盲区，或是在具体问题讨论中不够清晰、缺乏说服力的地方。
+请遵循以下学术审验准则：
+1. **逐一评述与具体性**：扫描全文，针对作者提出的每一个具体观点、解决的每一个具体问题、使用的每一份关键材料（文本、史料、艺术品）展开“点对点”探讨。
+2. **实质性对撞**：分析论证路径是否存在逻辑滑坡。激活你预训练中的核心理论（如现象学美学、叙事学、视觉文化研究等），核实理论是否被误用或浅层化。
+3. **真实性核实**：利用你的知识储备，联网或核实论文涉及的历史事实、引文出处及当代研究动态。
+4. **瑕疵发现**：挖掘隐藏的矛盾、被遮蔽的学术盲区，指出具体讨论思路中不清晰或缺乏说服力的地方。
 
 报告结构：
-一、具体核心观点审验（针对论题本身）
-二、论证材料与证据链评价（针对事实与引证）
-三、逻辑路径与探讨深度分析（针对推导过程）
-四、学术前沿对标与缺陷指出（针对学术瑕疵与盲区）
-五、针对性的进路建议（不再是写作建议，而是研究思路的修正）`
+一、【针对具体问题、观点与材料的逐一评述】（核心部分：针对文中每一个关键点展开学术对谈）
+二、【论证逻辑与推导路径的准确性审验】
+三、【材料处理与理论运用的穿透力分析】
+四、【学术前沿对标与潜在瑕疵诊断】
+五、【针对性研究进路修正建议】`
                         },
-                        { role: "user", content: `请对以下论文内容进行实质性的学术探讨和审验：\n\n${content}` }
+                        { role: "user", content: `请针对以下论文内容，围绕所涉及的具体问题、观点或材料逐一展开学术评述与深度审验：\n\n${content}` }
                     ],
-                    temperature: 0.4
+                    temperature: 0.3
                 })
             });
 
             const data = await response.json();
-            if (!response.ok) throw new Error(data.error?.message || '请求失败');
+            if (!response.ok) throw new Error(data.error?.message || '接口调用异常');
 
             const rawMarkdown = data.choices[0].message.content;
             reportContent.innerHTML = marked.parse(rawMarkdown);
@@ -140,7 +140,7 @@
             resultArea.scrollIntoView({ behavior: 'smooth' });
 
         } catch (err) {
-            errorBox.innerText = "审验中断：" + err.message;
+            errorBox.innerText = "审验失败：" + err.message;
             errorBox.style.display = 'block';
         } finally {
             loading.style.display = 'none';
